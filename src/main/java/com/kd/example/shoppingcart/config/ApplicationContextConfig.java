@@ -32,96 +32,90 @@ import com.kd.example.shoppingcart.dao.impl.ProductDAOImpl;
 // Load to Environment.
 @PropertySource("classpath:application.properties")
 public class ApplicationContextConfig {
+    
+    // The Environment class serves as the property holder
+    // and stores all the properties loaded by the @PropertySource
+    @Autowired
+    private Environment env;
 
-	// The Environment class serves as the property holder
-	// and stores all the properties loaded by the @PropertySource
-	@Autowired
-	private Environment env;
+    @Bean
+    public ResourceBundleMessageSource messageSource() {
+	ResourceBundleMessageSource rb = new ResourceBundleMessageSource();
+	// Load property in message/validator.properties
+	rb.setBasenames(new String[] { "messages/validator" });
+	return rb;
+    }
 
-	@Bean
-	public ResourceBundleMessageSource messageSource() {
-		ResourceBundleMessageSource rb = new ResourceBundleMessageSource();
-		// Load property in message/validator.properties
-		rb.setBasenames(new String[] { "messages/validator" });
-		return rb;
-	}
+    @Bean(name = "viewResolver")
+    public InternalResourceViewResolver getViewResolver() {
+	InternalResourceViewResolver viewResolver = new InternalResourceViewResolver();
+	viewResolver.setPrefix("/WEB-INF/pages/");
+	viewResolver.setSuffix(".jsp");
+	return viewResolver;
+    }
 
-	@Bean(name = "viewResolver")
-	public InternalResourceViewResolver getViewResolver() {
-		InternalResourceViewResolver viewResolver = new InternalResourceViewResolver();
-		viewResolver.setPrefix("/WEB-INF/pages/");
-		viewResolver.setSuffix(".jsp");
-		return viewResolver;
-	}
+    // Config for Upload.
+    @Bean(name = "multipartResolver")
+    public CommonsMultipartResolver multipartResolver() {
+	CommonsMultipartResolver commonsMultipartResolver = new CommonsMultipartResolver();
+	// Set Max Size...
+	// commonsMultipartResolver.setMaxUploadSize(...);
+	return commonsMultipartResolver;
+    }
 
-	// Config for Upload.
-	@Bean(name = "multipartResolver")
-	public CommonsMultipartResolver multipartResolver() {
-		CommonsMultipartResolver commonsMultipartResolver = new CommonsMultipartResolver();
+    @Bean(name = "dataSource")
+    public DataSource getDataSource() {
+	DriverManagerDataSource dataSource = new DriverManagerDataSource();
+	dataSource.setDriverClassName(env.getProperty("jdbc.driverClassName"));
+	dataSource.setUrl(env.getProperty("jdbc.url"));
+	dataSource.setUsername(env.getProperty("jdbc.username"));
+	dataSource.setPassword(env.getProperty("jdbc.password"));
+	System.out.println("## getDataSource: " + dataSource);
+	return dataSource;
+    }
 
-		// Set Max Size...
-		// commonsMultipartResolver.setMaxUploadSize(...);
+    @Autowired
+    @Bean(name = "sessionFactory")
+    public SessionFactory getSessionFactory(DataSource dataSource) throws Exception {
+	Properties properties = new Properties();
+	properties.put("hibernate.dialect", env.getProperty("hibernate.dialect"));
+	properties.put("hibernate.show_sql", env.getProperty("hibernate.show_sql"));
+	properties.put("current_session_context_class", env.getProperty("current_session_context_class"));
+	LocalSessionFactoryBean factoryBean = new LocalSessionFactoryBean();
+	// Package contain entity classes
+	factoryBean.setPackagesToScan(new String[] { "com.kd.example.shoppingcart.entity" });
+	factoryBean.setDataSource(dataSource);
+	factoryBean.setHibernateProperties(properties);
+	factoryBean.afterPropertiesSet();
+	SessionFactory sf = factoryBean.getObject();
+	System.out.println("## getSessionFactory: " + sf);
+	return sf;
+    }
 
-		return commonsMultipartResolver;
-	}
+    @Autowired
+    @Bean(name = "transactionManager")
+    public HibernateTransactionManager getTransactionManager(SessionFactory sessionFactory) {
+	HibernateTransactionManager transactionManager = new HibernateTransactionManager(sessionFactory);
+	return transactionManager;
+    }
 
-	@Bean(name = "dataSource")
-	public DataSource getDataSource() {
-		DriverManagerDataSource dataSource = new DriverManagerDataSource();
-		dataSource.setDriverClassName(env.getProperty("jdbc.driverClassName"));
-		dataSource.setUrl(env.getProperty("jdbc.url"));
-		dataSource.setUsername(env.getProperty("jdbc.username"));
-		dataSource.setPassword(env.getProperty("jdbc.password"));
-		System.out.println("## getDataSource: " + dataSource);
+    @Bean(name = "accountDAO")
+    public AccountDAO getApplicantDAO() {
+	return new AccountDAOImpl();
+    }
 
-		return dataSource;
-	}
+    @Bean(name = "productDAO")
+    public ProductDAO getProductDAO() {
+	return new ProductDAOImpl();
+    }
 
-	@Autowired
-	@Bean(name = "sessionFactory")
-	public SessionFactory getSessionFactory(DataSource dataSource) throws Exception {
-		Properties properties = new Properties();
+    @Bean(name = "orderDAO")
+    public OrderDAO getOrderDAO() {
+	return new OrderDAOImpl();
+    }
 
-		properties.put("hibernate.dialect", env.getProperty("hibernate.dialect"));
-		properties.put("hibernate.show_sql", env.getProperty("hibernate.show_sql"));
-		properties.put("current_session_context_class", env.getProperty("current_session_context_class"));
-		LocalSessionFactoryBean factoryBean = new LocalSessionFactoryBean();
-		// Package contain entity classes
-		factoryBean.setPackagesToScan(new String[] { "com.kd.example.shoppingcart.entity" });
-		factoryBean.setDataSource(dataSource);
-		factoryBean.setHibernateProperties(properties);
-		factoryBean.afterPropertiesSet();
-		SessionFactory sf = factoryBean.getObject();
-		System.out.println("## getSessionFactory: " + sf);
-		return sf;
-	}
-
-	@Autowired
-	@Bean(name = "transactionManager")
-	public HibernateTransactionManager getTransactionManager(SessionFactory sessionFactory) {
-		HibernateTransactionManager transactionManager = new HibernateTransactionManager(sessionFactory);
-
-		return transactionManager;
-	}
-
-	@Bean(name = "accountDAO")
-	public AccountDAO getApplicantDAO() {
-		return new AccountDAOImpl();
-	}
-
-	@Bean(name = "productDAO")
-	public ProductDAO getProductDAO() {
-		return new ProductDAOImpl();
-	}
-
-	@Bean(name = "orderDAO")
-	public OrderDAO getOrderDAO() {
-		return new OrderDAOImpl();
-	}
-
-	@Bean(name = "accountDAO")
-	public AccountDAO getAccountDAO() {
-		return new AccountDAOImpl();
-	}
-
+    @Bean(name = "accountDAO")
+    public AccountDAO getAccountDAO() {
+	return new AccountDAOImpl();
+    }
 }

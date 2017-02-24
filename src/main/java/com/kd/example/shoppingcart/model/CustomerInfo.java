@@ -1,52 +1,50 @@
 package com.kd.example.shoppingcart.model;
 
 public class CustomerInfo {
+    
+    private String name;
+    private String address;
+    private String email;
+    private String phone;
+    private boolean valid;
 
-	private String name;
-	private String address;
-	private String email;
-	private String phone;
+    public String getName() {
+	return name;
+    }
 
-	private boolean valid;
+    public void setName(String name) {
+	this.name = name;
+    }
 
-	public String getName() {
-		return name;
-	}
+    public String getEmail() {
+	return email;
+    }
 
-	public void setName(String name) {
-		this.name = name;
-	}
+    public void setEmail(String email) {
+	this.email = email;
+    }
 
-	public String getEmail() {
-		return email;
-	}
+    public String getAddress() {
+	return address;
+    }
 
-	public void setEmail(String email) {
-		this.email = email;
-	}
+    public void setAddress(String address) {
+	this.address = address;
+    }
 
-	public String getAddress() {
-		return address;
-	}
+    public String getPhone() {
+	return phone;
+    }
 
-	public void setAddress(String address) {
-		this.address = address;
-	}
+    public void setPhone(String phone) {
+	this.phone = phone;
+    }
 
-	public String getPhone() {
-		return phone;
-	}
+    public boolean isValid() {
+	return valid;
+    }
 
-	public void setPhone(String phone) {
-		this.phone = phone;
-	}
-
-	public boolean isValid() {
-		return valid;
-	}
-
-	public void setValid(boolean valid) {
-		this.valid = valid;
-	}
-
+    public void setValid(boolean valid) {
+	this.valid = valid;
+    }
 }

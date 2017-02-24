@@ -13,15 +13,15 @@ import com.kd.example.shoppingcart.entity.Account;
 // Transactional for Hibernate
 @Transactional
 public class AccountDAOImpl implements AccountDAO {
+    
+    @Autowired
+    private SessionFactory sessionFactory;
 
-	@Autowired
-	private SessionFactory sessionFactory;
-
-	public Account findAccount(String userName) {
-		Session session = sessionFactory.getCurrentSession();
-		Criteria crit = session.createCriteria(Account.class);
-		crit.add(Restrictions.eq("userName", userName));
-		return (Account) crit.uniqueResult();
-	}
-
+    @Override
+    public Account findAccount(String userName) {
+	Session session = sessionFactory.getCurrentSession();
+	Criteria crit = session.createCriteria(Account.class);
+	crit.add(Restrictions.eq("userName", userName));
+	return (Account) crit.uniqueResult();
+    }
 }

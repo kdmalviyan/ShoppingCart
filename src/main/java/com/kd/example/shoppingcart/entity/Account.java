@@ -10,57 +10,54 @@ import javax.persistence.Table;
 @Entity
 @Table(name = "Accounts")
 public class Account implements Serializable {
+    
+    private static final long serialVersionUID = -2054386655979281969L;
+    public static final String ROLE_MANAGER = "MANAGER";
+    public static final String ROLE_EMPLOYEE = "EMPLOYEE";
+    private String userName;
+    private String password;
+    private boolean active;
+    private String userRole;
 
-	private static final long serialVersionUID = -2054386655979281969L;
+    @Id
+    @Column(name = "User_Name", length = 20, nullable = false)
+    public String getUserName() {
+	return userName;
+    }
 
-	public static final String ROLE_MANAGER = "MANAGER";
-	public static final String ROLE_EMPLOYEE = "EMPLOYEE";
+    public void setUserName(String userName) {
+	this.userName = userName;
+    }
 
-	private String userName;
-	private String password;
-	private boolean active;
-	private String userRole;
+    @Column(name = "Password", length = 20, nullable = false)
+    public String getPassword() {
+	return password;
+    }
 
-	@Id
-	@Column(name = "User_Name", length = 20, nullable = false)
-	public String getUserName() {
-		return userName;
-	}
+    public void setPassword(String password) {
+	this.password = password;
+    }
 
-	public void setUserName(String userName) {
-		this.userName = userName;
-	}
+    @Column(name = "Active", length = 1, nullable = false)
+    public boolean isActive() {
+	return active;
+    }
 
-	@Column(name = "Password", length = 20, nullable = false)
-	public String getPassword() {
-		return password;
-	}
+    public void setActive(boolean active) {
+	this.active = active;
+    }
 
-	public void setPassword(String password) {
-		this.password = password;
-	}
+    @Column(name = "User_Role", length = 20, nullable = false)
+    public String getUserRole() {
+	return userRole;
+    }
 
-	@Column(name = "Active", length = 1, nullable = false)
-	public boolean isActive() {
-		return active;
-	}
+    public void setUserRole(String userRole) {
+	this.userRole = userRole;
+    }
 
-	public void setActive(boolean active) {
-		this.active = active;
-	}
-
-	@Column(name = "User_Role", length = 20, nullable = false)
-	public String getUserRole() {
-		return userRole;
-	}
-
-	public void setUserRole(String userRole) {
-		this.userRole = userRole;
-	}
-
-	@Override
-	public String toString() {
-		return "[" + this.userName + "," + this.password + "," + this.userRole + "]";
-	}
-
+    @Override
+    public String toString() {
+	return "[" + this.userName + "," + this.password + "," + this.userRole + "]";
+    }
 }

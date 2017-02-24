@@ -16,32 +16,30 @@ import org.springframework.web.servlet.config.annotation.WebMvcConfigurerAdapter
 @Configuration
 @EnableWebMvc
 public class WebMvcConfig extends WebMvcConfigurerAdapter {
+    
+    private static final Charset UTF8 = Charset.forName("UTF-8");
 
-	private static final Charset UTF8 = Charset.forName("UTF-8");
+    // Config UTF-8 Encoding.
+    @Override
+    public void configureMessageConverters(List<HttpMessageConverter<?>> converters) {
+	StringHttpMessageConverter stringConverter = new StringHttpMessageConverter();
+	stringConverter.setSupportedMediaTypes(Arrays.asList(new MediaType("text", "plain", UTF8)));
+	converters.add(stringConverter);
+	// Add other converters ...
+    }
 
-	// Config UTF-8 Encoding.
-	@Override
-	public void configureMessageConverters(List<HttpMessageConverter<?>> converters) {
-		StringHttpMessageConverter stringConverter = new StringHttpMessageConverter();
-		stringConverter.setSupportedMediaTypes(Arrays.asList(new MediaType("text", "plain", UTF8)));
-		converters.add(stringConverter);
+    // Static Resource Config
+    // equivalents for <mvc:resources/> tags
+    @Override
+    public void addResourceHandlers(ResourceHandlerRegistry registry) {
+	registry.addResourceHandler("/css/**").addResourceLocations("/css/").setCachePeriod(31556926);
+	registry.addResourceHandler("/img/**").addResourceLocations("/img/").setCachePeriod(31556926);
+	registry.addResourceHandler("/js/**").addResourceLocations("/js/").setCachePeriod(31556926);
+    }
 
-		// Add other converters ...
-	}
-
-	// Static Resource Config
-	// equivalents for <mvc:resources/> tags
-	@Override
-	public void addResourceHandlers(ResourceHandlerRegistry registry) {
-		registry.addResourceHandler("/css/**").addResourceLocations("/css/").setCachePeriod(31556926);
-		registry.addResourceHandler("/img/**").addResourceLocations("/img/").setCachePeriod(31556926);
-		registry.addResourceHandler("/js/**").addResourceLocations("/js/").setCachePeriod(31556926);
-	}
-
-	// equivalent for <mvc:default-servlet-handler/> tag
-	@Override
-	public void configureDefaultServletHandling(DefaultServletHandlerConfigurer configurer) {
-		configurer.enable();
-	}
-
+    // equivalent for <mvc:default-servlet-handler/> tag
+    @Override
+    public void configureDefaultServletHandling(DefaultServletHandlerConfigurer configurer) {
+	configurer.enable();
+    }
 }
